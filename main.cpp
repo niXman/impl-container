@@ -1,4 +1,3 @@
-
 #include <iostream>
 
 #include <boost/mpl/unique.hpp>
@@ -64,7 +63,7 @@ private:
 	void assert_if_type_is_not_exists() {
 		static_assert(
 			 boost::fusion::result_of::has_key<cont_type, Iface>::value
-			,"has no iface for this type"
+			,"doesn't contain implementation with this type"
 		);
 	}
 };
@@ -110,7 +109,7 @@ int main() {
 	std::cout << cont.get<type1>().m() << std::endl; // 4
 	std::cout << cont.get<type2>().m() << std::endl; // 6
 	std::cout << cont.get<type3>().m() << std::endl; // 8
-	//std::cout << cont.get<type4>().m() << std::endl; // static assertion: 'has no iface for this type'
+	//std::cout << cont.get<type4>().m() << std::endl; // static assertion: 'doesn't contain implementation with this type'
 }
 
 /***************************************************************************/
