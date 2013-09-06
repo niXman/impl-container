@@ -30,15 +30,42 @@ struct impl_container {
 
 	template<typename Iface>
 	Iface& get() {
-		assert_if_type_is_not_exists<Iface>();
-		return boost::fusion::at_key<Iface>(cont);
+		enum { value = boost::fusion::result_of::has_key<cont_type, Iface>::value };
+		static_assert(value, "doesn't contain implementation with this type");
+		return checker_helper<void, value>::template apply<Iface>(cont);
 	}
 
 	template<typename Iface>
 	const Iface& get() const {
-		assert_if_type_is_not_exists<Iface>();
-		return boost::fusion::at_key<Iface>(cont);
+		enum { value = boost::fusion::result_of::has_key<cont_type, Iface>::value };
+		static_assert(value, "doesn't contain implementation with this type");
+		return checker_helper<void, value>::template apply<Iface>(cont);
 	}
+
+private:
+	template<typename, bool>
+	struct checker_helper;
+
+	template<typename Fake>
+	struct checker_helper<Fake, true> {
+		template<typename T, typename Map>
+		static const T& apply(const Map& map) {
+			return boost::fusion::at_key<T>(map);
+		}
+
+		template<typename T, typename Map>
+		static T& apply(Map& map) {
+			return boost::fusion::at_key<T>(map);
+		}
+	};
+	template<typename Fake>
+	struct checker_helper<Fake, false> {
+		template<typename T, typename Map>
+		static const T& apply(const Map&) {}
+
+		template<typename T, typename Map>
+		static T& apply(Map&) {}
+	};
 
 private:
 	using cont_type = boost::fusion::map<
@@ -58,14 +85,6 @@ private:
 		 >::value == sizeof...(Types)
 		,"only unique types allowed"
 	);
-
-	template<typename Iface>
-	void assert_if_type_is_not_exists() {
-		static_assert(
-			 boost::fusion::result_of::has_key<cont_type, Iface>::value
-			,"doesn't contain implementation with this type"
-		);
-	}
 };
 
 /***************************************************************************/
@@ -109,7 +128,7 @@ int main() {
 	std::cout << cont.get<type1>().m() << std::endl; // 4
 	std::cout << cont.get<type2>().m() << std::endl; // 6
 	std::cout << cont.get<type3>().m() << std::endl; // 8
-	//std::cout << cont.get<type4>().m() << std::endl; // static assertion: 'doesn't contain implementation with this type'
+	//std::cout << cont.get<type4>().m() << std::endl; // static assertion: 'doesn't contains implementation with this type'
 }
 
 /***************************************************************************/
