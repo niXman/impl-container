@@ -31,14 +31,14 @@ struct impl_container {
 	template<typename Iface>
 	Iface& get() {
 		enum { value = boost::fusion::result_of::has_key<cont_type, Iface>::value };
-		static_assert(value, "doesn't contain implementation with this type");
+		static_assert(value, "impl_container doesn't contains implementation with this type");
 		return checker_helper<void, value>::template apply<Iface>(cont);
 	}
 
 	template<typename Iface>
 	const Iface& get() const {
 		enum { value = boost::fusion::result_of::has_key<cont_type, Iface>::value };
-		static_assert(value, "doesn't contain implementation with this type");
+		static_assert(value, "impl_container doesn't contains implementation with this type");
 		return checker_helper<void, value>::template apply<Iface>(cont);
 	}
 
