@@ -10,6 +10,7 @@ impl_container<type1, type2, type3> cont(2);
 std::cout << cont.get<type1>().m() << std::endl; // 4
 std::cout << cont.get<type2>().m() << std::endl; // 6
 std::cout << cont.get<type3>().m() << std::endl; // 8
-//std::cout << cont.get<type4>().m() << std::endl; // static assertion: 'has no iface for this type'
+//std::cout << cont.get<type4>().m() << std::endl; // static assertion:
+   // 'impl_container doesn't contains implementation with this type'
 
 ```
