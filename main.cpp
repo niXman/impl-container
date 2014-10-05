@@ -24,8 +24,8 @@
 template<typename... Types>
 struct impl_container {
 	template<typename... Args>
-	impl_container(const Args&... args)
-		:cont(boost::fusion::make_pair<Types>(args...)...)
+	impl_container(Args&&... args)
+		:cont(boost::fusion::make_pair<Types>(std::forward<Args>(args)...)...)
 	{}
 
 	template<typename Iface>
