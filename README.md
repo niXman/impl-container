@@ -7,21 +7,36 @@ Container of implementations with getter by key and verifying the uniqueness of 
 
 #### "Simple example"
 ```cpp
-struct type1 { int method() const {...} };
-struct type2 { int method() const {...} };
-struct type3 { int method() const {...} };
+struct type1 {
+    int v;
+    type1(int v):v(v){}
+    int m() const { return v+v; }
+};
+struct type2 {
+    int v;
+    type2(int v):v(v){}
+    int m() const { return v+v+v; }
+};
+struct type3 {
+    int v;
+    type3(int v):v(v){}
+    int m() const { return v+v+v+v; }
+};
 
-impl_container<type1, type1> cont( // static assertion: 'only unique types allowed'
-   2 // arguments to types constructors
-);
-impl_container<type1, type2, type3> cont(
-   2 // arguments to types constructors
-);
+struct type4 {
+    int v;
+    type4(int v):v(v) {}
+    int m() const { return v+v+v+v+v; }
+};
 
-std::cout << cont.get<type1>().method() << std::endl;
-std::cout << cont.get<type2>().method() << std::endl;
-std::cout << cont.get<type3>().method() << std::endl;
-std::cout << cont.get<type4>().method() << std::endl; // static assertion:
-   // 'impl_container doesn't contains implementation with this type'
+int main() {
+    //impl_container<type1, type1> cont(2); // static assertion: only unique types allowed
+    impl_container<type1, type2, type3> cont(2);
 
+    std::cout << cont.get<type1>().m() << std::endl; // 4
+    std::cout << cont.get<type2>().m() << std::endl; // 6
+    std::cout << cont.get<type3>().m() << std::endl; // 8
+    //std::cout << cont.get<type4>().m() << std::endl; // static assertion: 
+    // impl_container doesn't contains this type
+}
 ```

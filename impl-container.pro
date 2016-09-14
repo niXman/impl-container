@@ -8,3 +8,6 @@ QMAKE_CXXFLAGS += \
 
 SOURCES += main.cpp
 
+HEADERS += \
+    impl_container.hpp
+
